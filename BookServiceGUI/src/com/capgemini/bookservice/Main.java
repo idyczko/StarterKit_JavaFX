@@ -27,14 +27,8 @@ public class Main extends Application {
         showBookService();
     }
 
-    /**
-     * 
-     */
+
     public void initRootLayout() {
-    	String langCode = getParameters().getNamed().get("lang");
-    	if (langCode != null && !langCode.isEmpty()) {
-    		Locale.setDefault(Locale.forLanguageTag(langCode));
-    	}
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(Main.class.getResource("view/fxml/rootLayout.fxml"));
