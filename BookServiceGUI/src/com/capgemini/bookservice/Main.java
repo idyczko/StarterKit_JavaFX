@@ -50,6 +50,7 @@ public class Main extends Application {
     	    try {
     	        FXMLLoader loader = new FXMLLoader();
     	        loader.setLocation(Main.class.getResource("view/fxml/bookservice.fxml"));
+    	        loader.setResources(ResourceBundle.getBundle(FILENAME));
     	        AnchorPane bookService = (AnchorPane) loader.load();
 
     	        rootLayout.setCenter(bookService);

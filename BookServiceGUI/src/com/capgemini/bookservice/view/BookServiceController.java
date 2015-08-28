@@ -1,27 +1,17 @@
 package com.capgemini.bookservice.view;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.ResourceBundle;
-import java.util.Set;
-
-import javax.naming.NameNotFoundException;
 
 import com.capgemini.bookservice.DataProvider;
 import com.capgemini.bookservice.model.Author;
 import com.capgemini.bookservice.model.Book;
 import com.capgemini.bookservice.model.BookSearchModel;
 
-import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
-import javafx.concurrent.Worker;
-import javafx.concurrent.Worker.State;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -37,13 +27,16 @@ public class BookServiceController {
 
 	@FXML
 	private TableView<Book> bookTable;
+	
 	@FXML
 	private TableColumn<Book, String> titleColumn;
+	
 	@FXML
 	private TableColumn<Book, String> authorColumn;
 
 	@FXML
 	private Label titleLabel;
+	
 	@FXML
 	private Label authorLabel;
 
@@ -118,8 +111,7 @@ public class BookServiceController {
 			}
 			return simpleString;
 		});
-		// bookTable.setPlaceholder(new
-		// Label(resources.getString("table.emptyText")));
+		bookTable.setPlaceholder(new Label(resources.getString("table.emptyText")));
 		bookTable.itemsProperty().bind(model.resultProperty());
 		phraseField.textProperty().bindBidirectional(model.phraseProperty());
 		titleField.textProperty().bindBidirectional(model.titleProperty());
