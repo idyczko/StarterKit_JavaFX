@@ -66,8 +66,8 @@ public class BookServiceController {
 
 	@FXML
 	private void addNewBook(ActionEvent event) {
-		Book book = new Book(model.getTitle(),
-				new HashSet<Author>(Arrays.asList(new Author(model.getFirstName(), model.getLastName()))));
+		Book book = new Book(null, model.getTitle(),
+				new HashSet<Author>(Arrays.asList(new Author(null, model.getFirstName(), model.getLastName()))));
 		Task<Book> backgroundTask = new Task<Book>() {
 
 			@Override
@@ -75,6 +75,9 @@ public class BookServiceController {
 
 				Book returnedBook = dataProvider.saveBook(book);
 				model.getResult().add(returnedBook);
+				titleField.clear();
+				firstNameField.clear();
+				lastNameField.clear();
 				return returnedBook;
 			}
 		};
@@ -101,9 +104,8 @@ public class BookServiceController {
 
 	@FXML
 	private void initialize() {
-		// Initialize the person table with the two columns.
-
-		titleColumn.setCellValueFactory(cellData -> cellData.getValue().getTitleProperty());
+		
+		titleColumn.setCellValueFactory(cellData -> {return new SimpleStringProperty(cellData.getValue().getTitle());});
 		authorColumn.setCellValueFactory(cellData -> {
 			SimpleStringProperty simpleString = new SimpleStringProperty("");
 			for (Author author : cellData.getValue().getAuthors()) {
@@ -111,6 +113,7 @@ public class BookServiceController {
 			}
 			return simpleString;
 		});
+		
 		bookTable.setPlaceholder(new Label(resources.getString("table.emptyText")));
 		bookTable.itemsProperty().bind(model.resultProperty());
 		phraseField.textProperty().bindBidirectional(model.phraseProperty());

@@ -25,9 +25,9 @@ public class CustomJSONParser {
 			for (String author : authorsString) {
 				String firstName = author.split("\"firstName\":\"")[1].split("\",\"")[0].replaceAll("\"", "");
 				String lastName = author.split("\"lastName\":\"")[1].split("\\},\\{")[0].replaceAll("[\"\\}]", "");
-				authors.add(new Author(firstName, lastName));
+				authors.add(new Author(null, firstName, lastName));
 			}
-			books.add(new Book(title, authors));
+			books.add(new Book(null, title, authors));
 		}
 		return books;
 	}
