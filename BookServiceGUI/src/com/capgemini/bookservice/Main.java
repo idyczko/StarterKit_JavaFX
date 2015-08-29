@@ -16,8 +16,8 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
     private Stage primaryStage;
-    private BorderPane rootLayout;
-    private static final String FILENAME = "com/capgemini/bookservice/view/bundle/bundle";
+
+    private static final String BUNDLE_PATH = "com/capgemini/bookservice/view/bundle/bundle";
     
     @Override
     public void start(Stage primaryStage){
@@ -25,17 +25,15 @@ public class Main extends Application {
         this.primaryStage.setTitle("Book Service");
 
         initRootLayout();
-
-        showBookService();
     }
 
 
     public void initRootLayout() {
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(Main.class.getResource("view/fxml/rootLayout.fxml"));
-            loader.setResources(ResourceBundle.getBundle(FILENAME));
-            rootLayout = (BorderPane) loader.load();
+            loader.setLocation(Main.class.getResource("view/fxml/bookservice.fxml"));
+            loader.setResources(ResourceBundle.getBundle(BUNDLE_PATH));
+            BorderPane rootLayout = (BorderPane) loader.load();
 
             Scene scene = new Scene(rootLayout);
             scene.getStylesheets()
@@ -46,20 +44,6 @@ public class Main extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public void showBookService() {
-    	    try {
-    	        FXMLLoader loader = new FXMLLoader();
-    	        loader.setLocation(Main.class.getResource("view/fxml/bookservice.fxml"));
-    	        loader.setResources(ResourceBundle.getBundle(FILENAME));
-    	        AnchorPane bookService = (AnchorPane) loader.load();
-
-    	        rootLayout.setCenter(bookService);
-
-    	    } catch (IOException e) {
-    	        e.printStackTrace();
-    	    }
     }
 
     public static void main(String[] args) {

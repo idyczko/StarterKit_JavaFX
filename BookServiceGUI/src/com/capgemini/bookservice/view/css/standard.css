@@ -3,13 +3,6 @@
 	-fx-background-color: #0A2933;
 }
 
-.table-view .table-row-cell:selected {
-	-fx-font-size: 120.0%;
-}
-
-.table-view .table-row-cell:hover {
-	-fx-background-color: #33CCFF;
-}
 
 .AnchorPane .label {
 	-fx-font-size: 15.0px;	
@@ -24,7 +17,7 @@
 	-fx-border-color: black;
 }
 
-.GridPane .textField {
+.text-field {
 	-fx-background-color:#007ACC;	
 	-fx-border-color: white;
 }
@@ -59,28 +52,50 @@
     -fx-padding: 5;
 }
 
-.table-view:nth-child(odd){
-    -fx-background-color: white;
-}
-
 
 .table-view .column-header .label {
-    -fx-font-size: 20pt;
+    -fx-font-size: 30pt;
     -fx-font-family: "Segoe UI Light";
     -fx-text-fill: white;
     -fx-alignment: center-left;
     -fx-opacity: 1;
 }
+.table-view .column-header {
+ -fx-border-color: white;
+}
 
-.split-pane:horizontal > .split-pane-divider {
-    -fx-border-color: transparent #1d1d1d;
-    -fx-background-color: transparent, derive(#1d1d1d,20%);
+
+.table-view .table-row-cell {
+	-fx-font-size: 25pt;
+}
+
+.table-view .table-row-cell:selected {
+	-fx-font-size: 27pt;
+}
+
+.table-view .table-row-cell:hover {
+	-fx-background-color: #33CCFF;
 }
 
 .split-pane:vertical > .split-pane-divider {
     -fx-border-color: black;
     -fx-background-color: transparent, derive(#1d1d1d,20%);
 }
+
+.AnchorPane .SplitPane .SplitPane .AnchorPane .table-view .column-header .label {
+    -fx-font-size: 17pt;
+}
+.AnchorPane .SplitPane .SplitPane .AnchorPane .table-view .table-row-cell:selected {
+	-fx-font-size: 16pt;
+}
+.AnchorPane .SplitPane .SplitPane .AnchorPane .table-view .table-row-cell {
+	-fx-font-size: 15pt;
+}
+.split-pane:horizontal > .split-pane-divider {
+    -fx-border-color: transparent #1d1d1d;
+    -fx-background-color: transparent, derive(#1d1d1d,20%);
+}
+
 
 .menu-bar {
     -fx-background-color: derive(#1d1d1d,20%);

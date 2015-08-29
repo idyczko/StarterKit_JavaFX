@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -14,11 +15,19 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
 import com.capgemini.bookservice.model.Book;
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class DataProviderImpl implements DataProvider {
 	private ObjectMapper mapper = new ObjectMapper();
+
+	@Override
+	public Boolean deleteBook(Long id) throws JsonParseException, JsonMappingException, IOException {
+		return sendDeleteRequest(id);
+	}
+	
 
 	@Override
 	public Collection<Book> findBooks(String phrase) throws IOException {
@@ -47,6 +56,19 @@ public class DataProviderImpl implements DataProvider {
 			return null;
 		}
 	}
+	
+	private Boolean sendDeleteRequest(Long id) {
+
+		String url = "http://localhost:9721/workshop/rest/books/book/" + id;
+		HttpClient httpClient = HttpClientBuilder.create().build();
+		try {
+			HttpDelete request = new HttpDelete(url);
+			HttpResponse response = httpClient.execute(request);
+			return response.getStatusLine().getStatusCode()==200;
+		} catch (Exception ex) {
+			return null;
+		}
+	}
 
 	private String sendSaveRequest(Book book) throws IOException {
 		String url = "http://localhost:9721/workshop/rest/books/book";
@@ -66,5 +88,7 @@ public class DataProviderImpl implements DataProvider {
 			return null;
 		}
 	}
+
+
 
 }

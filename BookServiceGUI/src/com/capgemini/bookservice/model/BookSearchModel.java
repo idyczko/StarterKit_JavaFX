@@ -5,12 +5,15 @@ import java.util.Collection;
 import java.util.List;
 
 import javafx.beans.property.ListProperty;
+import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 
 public class BookSearchModel {
+	private final LongProperty id = new SimpleLongProperty();
 	private final StringProperty phrase = new SimpleStringProperty();
 	
 	private final StringProperty title = new SimpleStringProperty();
@@ -19,6 +22,9 @@ public class BookSearchModel {
 	
 	private final ListProperty<Book> result = new SimpleListProperty<Book>(
 			FXCollections.observableList(new ArrayList<Book>()));
+	
+	private final ListProperty<Author> authors = new SimpleListProperty<Author>(
+			FXCollections.observableList(new ArrayList<Author>()));
 	
 	
 	public final String getPhrase() {
@@ -73,8 +79,24 @@ public class BookSearchModel {
 	public final void setResult(Collection<Book> collection) {
 		result.setAll(collection);
 	}
+	
+	public final void setId(Long id) {
+		this.id.set(id);
+	}
 
 	public ListProperty<Book> resultProperty() {
 		return result;
+	}
+	
+	public final List<Author> getAuthors() {
+		return authors.get();
+	}
+	
+	public ListProperty<Author> authorsProperty() {
+		return authors;
+	}
+
+	public Long getId() {
+		return id.get();
 	}
 }
