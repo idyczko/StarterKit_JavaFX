@@ -14,81 +14,64 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
-import com.capgemini.bookservice.model.Book;
-import com.fasterxml.jackson.core.JsonParseException;
+import com.capgemini.bookservice.model.BookVO;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class DataProviderImpl implements DataProvider {
 	private ObjectMapper mapper = new ObjectMapper();
 
 	@Override
-	public Boolean deleteBook(Long id) throws JsonParseException, JsonMappingException, IOException {
+	public Boolean deleteBook(Long id) throws IOException {
 		return sendDeleteRequest(id);
 	}
-	
 
 	@Override
-	public Collection<Book> findBooks(String phrase) throws IOException {
-		List<Book> books = mapper.readValue(sendSearchRequest(phrase), new TypeReference<List<Book>>(){});
-		return books;
+	public Collection<BookVO> findBooks(String phrase) throws IOException {
+		return mapper.readValue(sendSearchRequest(phrase), new TypeReference<List<BookVO>>() {
+		});
 	}
 
 	@Override
-	public Book saveBook(Book book) throws IOException {
-		return mapper.readValue(sendSaveRequest(book), Book.class);
+	public BookVO saveBook(BookVO book) throws IOException {
+		return mapper.readValue(sendSaveRequest(book), BookVO.class);
 	}
 
 	private String sendSearchRequest(String phrase) throws IOException {
-		if (phrase == null) {
-			phrase = "";
+		if(phrase == null){
+			phrase ="";
 		}
 		String url = "http://localhost:9721/workshop/rest/books/books-by-title?titlePrefix=" + phrase;
 		HttpClient httpClient = HttpClientBuilder.create().build();
-		try {
-			HttpGet request = new HttpGet(url);
-			HttpResponse response = httpClient.execute(request);
-			HttpEntity responseEntity = response.getEntity();
-			String responseString = EntityUtils.toString(responseEntity, "UTF-8");
-			return responseString;
-		} catch (Exception ex) {
-			return null;
-		}
+		HttpGet request = new HttpGet(url);
+		HttpResponse response = httpClient.execute(request);
+		HttpEntity responseEntity = response.getEntity();
+		String responseString = EntityUtils.toString(responseEntity, "UTF-8");
+		return responseString;
 	}
-	
-	private Boolean sendDeleteRequest(Long id) {
+
+	private Boolean sendDeleteRequest(Long id) throws IOException {
 
 		String url = "http://localhost:9721/workshop/rest/books/book/" + id;
 		HttpClient httpClient = HttpClientBuilder.create().build();
-		try {
-			HttpDelete request = new HttpDelete(url);
-			HttpResponse response = httpClient.execute(request);
-			return response.getStatusLine().getStatusCode()==200;
-		} catch (Exception ex) {
-			return null;
-		}
+		HttpDelete request = new HttpDelete(url);
+		HttpResponse response = httpClient.execute(request);
+		return response.getStatusLine().getStatusCode() == 200;
 	}
 
-	private String sendSaveRequest(Book book) throws IOException {
+	private String sendSaveRequest(BookVO book) throws IOException {
 		String url = "http://localhost:9721/workshop/rest/books/book";
 		HttpClient httpClient = HttpClientBuilder.create().build();
-		try {
-			HttpPost request = new HttpPost(url);
-			StringEntity bookJSON = new StringEntity(mapper.writeValueAsString(book), "UTF-8");
-			bookJSON.setContentType("application/json");
-			request.setEntity(bookJSON);
-			
-			HttpResponse response = httpClient.execute(request);
-			HttpEntity responseEntity = response.getEntity();
-			String responseString = EntityUtils.toString(responseEntity, "UTF-8");
+		HttpPost request = new HttpPost(url);
+		StringEntity bookJSON = new StringEntity(mapper.writeValueAsString(book), "UTF-8");
+		bookJSON.setContentType("application/json");
+		request.setEntity(bookJSON);
 
-			return responseString;
-		} catch (Exception ex) {
-			return null;
-		}
+		HttpResponse response = httpClient.execute(request);
+		HttpEntity responseEntity = response.getEntity();
+		String responseString = EntityUtils.toString(responseEntity, "UTF-8");
+
+		return responseString;
 	}
-
-
 
 }

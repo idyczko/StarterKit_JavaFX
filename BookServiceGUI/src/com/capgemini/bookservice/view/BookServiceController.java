@@ -1,20 +1,22 @@
 package com.capgemini.bookservice.view;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.ResourceBundle;
 
 import com.capgemini.bookservice.DataProvider;
-import com.capgemini.bookservice.model.Author;
-import com.capgemini.bookservice.model.Book;
-import com.capgemini.bookservice.model.BookSearchModel;
+import com.capgemini.bookservice.Main;
+import com.capgemini.bookservice.model.AuthorVO;
+import com.capgemini.bookservice.model.BookServiceModel;
+import com.capgemini.bookservice.model.BookVO;
 
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -27,13 +29,13 @@ public class BookServiceController {
 	ResourceBundle resources;
 
 	@FXML
-	private TableView<Book> bookTable;
+	private TableView<BookVO> bookTable;
 
 	@FXML
-	private TableColumn<Book, String> titleColumn;
+	private TableColumn<BookVO, String> titleColumn;
 
 	@FXML
-	private TableColumn<Book, String> authorColumn;
+	private TableColumn<BookVO, String> authorColumn;
 
 	@FXML
 	private Label titleLabel;
@@ -42,13 +44,13 @@ public class BookServiceController {
 	private Label authorLabel;
 
 	@FXML
-	private TableView<Author> authorTable;
+	private TableView<AuthorVO> authorTable;
 
 	@FXML
-	private TableColumn<Author, String> firstNameColumn;
+	private TableColumn<AuthorVO, String> firstNameColumn;
 
 	@FXML
-	private TableColumn<Author, String> lastNameColumn;
+	private TableColumn<AuthorVO, String> lastNameColumn;
 
 	@FXML
 	private Label firstNameLabel;
@@ -66,6 +68,9 @@ public class BookServiceController {
 	Button addAuthorButton;
 
 	@FXML
+	Button removeAuthorButton;
+
+	@FXML
 	TextField phraseField;
 
 	@FXML
@@ -78,74 +83,98 @@ public class BookServiceController {
 	TextField lastNameField;
 
 	private final DataProvider dataProvider = DataProvider.INSTANCE;
-	private final BookSearchModel model = new BookSearchModel();
+	private final BookServiceModel model = new BookServiceModel();
+	private Main mainApp;
 
 	public BookServiceController() {
 	}
 
 	@FXML
-	private void deleteBook(ActionEvent event) {
-		Task<Boolean> backgroundTask = new Task<Boolean>() {
+	private void addNewBook(ActionEvent event) {
+		try {
+			Task<BookVO> backgroundTask = new Task<BookVO>() {
 
-			@Override
-			protected Boolean call() throws Exception {
-				Boolean bookIsDeleted = false;
-				if (model.getId() != null) {
-					bookIsDeleted = dataProvider.deleteBook(model.getId());
-					model.getResult().remove(bookTable.getSelectionModel().getSelectedItem());
-					model.setId(null);
+				@Override
+				protected BookVO call() throws Exception {
+
+					BookVO returnedBook = dataProvider
+							.saveBook(new BookVO(null, model.getTitle(), new HashSet<AuthorVO>(model.getAuthors())));
+					model.getResult().add(returnedBook);
+					titleField.clear();
+					firstNameField.clear();
+					lastNameField.clear();
+					model.authorsProperty().clear();
+					return returnedBook;
 				}
-				return bookIsDeleted;
-			}
-		};
+			};
 
-		new Thread(backgroundTask).start();
+			new Thread(backgroundTask).start();
+		} catch (Exception e) {
+			showAlert("Exception encountered!", "Please perform action later, as the server is not available.");
+		}
 	}
 
 	@FXML
-	private void addNewBook(ActionEvent event) {
-		Book book = new Book(null, model.getTitle(), new HashSet<Author>(model.getAuthors()));
-		Task<Book> backgroundTask = new Task<Book>() {
+	private void deleteBook(ActionEvent event) {
+		if (bookTable.getSelectionModel().getSelectedIndex() >= 0) {
+			try {
+				Task<Boolean> backgroundTask = new Task<Boolean>() {
 
-			@Override
-			protected Book call() throws Exception {
+					@Override
+					protected Boolean call() throws Exception {
+						Boolean bookIsDeleted = false;
+						bookIsDeleted = dataProvider
+								.deleteBook(bookTable.getSelectionModel().getSelectedItem().getId());
+						if (bookIsDeleted) {
+							model.getResult().remove(bookTable.getSelectionModel().getSelectedItem());
+						}
+						return bookIsDeleted;
+					}
+				};
 
-				Book returnedBook = dataProvider.saveBook(book);
-				model.getResult().add(returnedBook);
-				titleField.clear();
-				firstNameField.clear();
-				lastNameField.clear();
-				model.authorsProperty().clear();
-				return returnedBook;
+				new Thread(backgroundTask).start();
+			} catch (Exception e) {
+				showAlert("Exception encountered!", "Please perform action later, as the server is not available.");
 			}
-		};
-
-		new Thread(backgroundTask).start();
+		} else {
+			showAlert("Warning", "Please select book to be deleted from table!");
+		}
 	}
 
 	@FXML
 	private void addAuthor(ActionEvent event) {
-		Author author = new Author(null, model.getFirstName(), model.getLastName());
-		model.getAuthors().add(author);
+		model.getAuthors().add(new AuthorVO(null, model.getFirstName(), model.getLastName()));
 		firstNameField.clear();
 		lastNameField.clear();
 	}
 
 	@FXML
+	private void removeAuthor(ActionEvent event) {
+		if (authorTable.getSelectionModel().getSelectedIndex() >= 0) {
+			model.getAuthors().remove(authorTable.getSelectionModel().getSelectedItem());
+		} else {
+			showAlert("Warning", "Please select author to be deleted from table!");
+		}
+	}
+
+	@FXML
 	public void searchButtonAction(ActionEvent event) {
 
-		Task<Collection<Book>> backgroundTask = new Task<Collection<Book>>() {
+		try {
+			Task<Collection<BookVO>> backgroundTask = new Task<Collection<BookVO>>() {
 
-			@Override
-			protected Collection<Book> call() throws Exception {
+				@Override
+				protected Collection<BookVO> call() throws IOException {
+					Collection<BookVO> books = dataProvider.findBooks(model.getPhrase());
+					model.setResult(books);
+					return books;
+				}
+			};
 
-				Collection<Book> books = dataProvider.findBooks(model.getPhrase());
-				model.setResult(books);
-				return books;
-			}
-		};
-
-		new Thread(backgroundTask).start();
+			new Thread(backgroundTask).start();
+		} catch (Exception e) {
+			showAlert("Exception encountered!", "Please perform action later, as the server is not available.");
+		}
 	}
 
 	@FXML
@@ -156,7 +185,7 @@ public class BookServiceController {
 		});
 		authorColumn.setCellValueFactory(cellData -> {
 			SimpleStringProperty simpleString = new SimpleStringProperty("");
-			for (Author author : cellData.getValue().getAuthors()) {
+			for (AuthorVO author : cellData.getValue().getAuthors()) {
 				simpleString.set(simpleString.get() + author.getFirstName() + " " + author.getLastName() + ", ");
 			}
 			return simpleString;
@@ -170,24 +199,32 @@ public class BookServiceController {
 
 		bookTable.setPlaceholder(new Label(resources.getString("booktable.emptyText")));
 		bookTable.itemsProperty().bind(model.resultProperty());
-		bookTable.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Book>() {
-			@Override
-			public void changed(ObservableValue<? extends Book> observable, Book oldValue, Book newValue) {
-				if (newValue != null) {
-					model.setId(newValue.getId());
-				}
-			}
-		});
+
 		authorTable.setPlaceholder(new Label(resources.getString("authortable.emptyText")));
 		authorTable.itemsProperty().bind(model.authorsProperty());
+
 		phraseField.textProperty().bindBidirectional(model.phraseProperty());
 		titleField.textProperty().bindBidirectional(model.titleProperty());
 		firstNameField.textProperty().bindBidirectional(model.firstNameProperty());
 		lastNameField.textProperty().bindBidirectional(model.lastNameProperty());
+
 		saveButton.disableProperty()
 				.bind(titleField.textProperty().isEmpty().or(model.authorsProperty().emptyProperty()));
 		addAuthorButton.disableProperty()
 				.bind(firstNameField.textProperty().isEmpty().or(lastNameField.textProperty().isEmpty()));
+	}
+
+	private void showAlert(String title, String content) {
+		Alert alert = new Alert(AlertType.WARNING);
+		alert.initOwner(mainApp.getPrimaryStage());
+		alert.setTitle(title);
+		alert.setContentText(content);
+
+		alert.showAndWait();
+	}
+
+	public void setMainApp(Main mainApp) {
+		this.mainApp = mainApp;
 	}
 
 }
