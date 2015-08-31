@@ -27,10 +27,10 @@ public class ImageViewerController {
 
 	@FXML
 	private ListView<String> filesList;
-	
+
 	@FXML
 	private Button nextButton;
-	
+
 	@FXML
 	private Button previousButton;
 
@@ -39,43 +39,39 @@ public class ImageViewerController {
 
 	public ImageViewerController() {
 	}
-	
+
 	@FXML
-	public void nextPicture(ActionEvent event){
+	public void nextPicture(ActionEvent event) {
 		Task<Void> backgroundTask = new Task<Void>() {
 
 			@Override
 			protected Void call() throws Exception {
-				int pictureIndex = model.getSelectedFileIndex().get()+1;
-				if(pictureIndex >=model.getFiles().size()){
-					pictureIndex=0;
+				int pictureIndex = model.getSelectedFileIndex().get() + 1;
+				if (pictureIndex >= model.getFiles().size()) {
+					pictureIndex = 0;
 				}
 				model.getSelectedFileIndex().set(pictureIndex);
 				Image img = dataProvider.getImage(model.getFolderPath() + "\\" + model.getFiles().get(pictureIndex));
-				imageView.fitWidthProperty().set(img.getWidth());
-				imageView.fitHeightProperty().set(img.getHeight());
-				imageView.setImage(img);
+				loadImage(img);
 				return null;
 			}
 		};
 		new Thread(backgroundTask).start();
 	}
-	
+
 	@FXML
-	public void previousPicture(ActionEvent event){
+	public void previousPicture(ActionEvent event) {
 		Task<Void> backgroundTask = new Task<Void>() {
-			
+
 			@Override
 			protected Void call() throws Exception {
-				int pictureIndex = model.getSelectedFileIndex().get()-1;
-				if(pictureIndex <0){
-					pictureIndex=model.getFiles().size()-1;
+				int pictureIndex = model.getSelectedFileIndex().get() - 1;
+				if (pictureIndex < 0) {
+					pictureIndex = model.getFiles().size() - 1;
 				}
 				model.getSelectedFileIndex().set(pictureIndex);
 				Image img = dataProvider.getImage(model.getFolderPath() + "\\" + model.getFiles().get(pictureIndex));
-				imageView.fitWidthProperty().set(img.getWidth());
-				imageView.fitHeightProperty().set(img.getHeight());
-				imageView.setImage(img);
+				loadImage(img);
 				return null;
 			}
 		};
@@ -87,18 +83,20 @@ public class ImageViewerController {
 		DirectoryChooser directoryChooser = new DirectoryChooser();
 		directoryChooser.setTitle("Choose Directory");
 		File myDirectory = directoryChooser.showDialog(null);
-		model.getFolderPathProperty().set(myDirectory.getPath());
-		model.getFiles().setAll(myDirectory.list(new ImageFileFilter()));
-		model.getSelectedFileIndex().set(0);
+		if (myDirectory != null) {
+			model.getFolderPathProperty().set(myDirectory.getPath());
+			model.getFiles().setAll(myDirectory.list(new ImageFileFilter()));
+			model.getSelectedFileIndex().set(0);
+		}
 	}
 
 	@FXML
 	private void initialize() {
 		zoomSlider.valueProperty().addListener(new ChangeListener<Number>() {
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-				if(imageView.getImage()!=null){
-				imageView.setFitWidth(imageView.getImage().getWidth()*(double)newValue);
-				imageView.setFitHeight(imageView.getImage().getHeight()*(double)newValue);
+				if (imageView.getImage() != null) {
+					imageView.setFitWidth(imageView.getImage().getWidth() * (double) newValue);
+					imageView.setFitHeight(imageView.getImage().getHeight() * (double) newValue);
 				}
 			}
 		});
@@ -114,9 +112,7 @@ public class ImageViewerController {
 					protected Void call() throws Exception {
 						model.getSelectedFileIndex().set(filesList.getSelectionModel().getSelectedIndex());
 						Image img = dataProvider.getImage(model.getFolderPath() + "\\" + newValue);
-						imageView.fitWidthProperty().set(img.getWidth());
-						imageView.fitHeightProperty().set(img.getHeight());
-						imageView.setImage(img);
+						loadImage(img);
 						return null;
 					}
 				};
@@ -124,6 +120,13 @@ public class ImageViewerController {
 			}
 		});
 
+	}
+
+	private void loadImage(Image img) {
+		imageView.fitWidthProperty().set(img.getWidth());
+		imageView.fitHeightProperty().set(img.getHeight());
+		imageView.setImage(img);
+		zoomSlider.setValue(1);
 	}
 
 }
