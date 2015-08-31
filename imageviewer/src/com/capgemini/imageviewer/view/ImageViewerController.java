@@ -96,8 +96,10 @@ public class ImageViewerController {
 	private void initialize() {
 		zoomSlider.valueProperty().addListener(new ChangeListener<Number>() {
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				if(imageView.getImage()!=null){
 				imageView.setFitWidth(imageView.getImage().getWidth()*(double)newValue);
 				imageView.setFitHeight(imageView.getImage().getHeight()*(double)newValue);
+				}
 			}
 		});
 		filesList.itemsProperty().bind(model.getFilesProperty());

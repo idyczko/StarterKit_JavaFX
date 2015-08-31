@@ -1,1 +1,67 @@
-/* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+.button {
+    -fx-border-color: #e2e2e2;
+    -fx-border-width: 1;
+    -fx-border-style: solid;
+    -fx-background-color: #1d1d1d;
+    -fx-text-fill: white;
+}
+
+.button:hover {
+    -fx-background-color: #3a3a3a;
+}
+
+.button:pressed{
+  -fx-background-color: #1d1d1d;
+  -fx-text-fill: white;
+}
+
+.button:disabled {
+    -fx-opacity: 0.4;
+    -fx-background-color: #1d1d1d;
+    -fx-text-fill: white;
+}
+
+.list-view {
+    -fx-base: #1d1d1d;
+    -fx-control-inner-background: #1d1d1d;
+    -fx-background-color: #1d1d1d;
+}
+
+.anchor-pane {
+    -fx-base: #1d1d1d;
+    -fx-control-inner-background: #1d1d1d;
+    -fx-background-color: #1d1d1d;
+}
+
+
+.list-view  {
+ -fx-border-color: white;
+}
+
+.split-pane{
+	 -fx-background-color: transparent, derive(#1d1d1d,20%);
+}
+
+.split-pane:vertical > .split-pane-divider {
+    -fx-border-color: black;
+    -fx-background-color: transparent, derive(#1d1d1d,20%);
+}
+
+.split-pane:horizontal > .split-pane-divider {
+    -fx-border-color: transparent #1d1d1d;
+    -fx-background-color: transparent, derive(#1d1d1d,20%);
+}
+
+
+.menu-bar {
+    -fx-background-color: derive(#1d1d1d,20%);
+}
+
+.context-menu {
+    -fx-background-color: derive(#1d1d1d,50%);
+}
+
+.menu-bar .label {
+    -fx-font-size: 14pt;
+    -fx-text-fill: white;
+}
