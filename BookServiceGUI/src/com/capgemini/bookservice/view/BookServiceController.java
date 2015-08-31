@@ -59,28 +59,28 @@ public class BookServiceController {
 	private Label lastNameLabel;
 
 	@FXML
-	Button searchButton;
+	private Button searchButton;
 
 	@FXML
-	Button saveButton;
+	private Button saveButton;
 
 	@FXML
-	Button addAuthorButton;
+	private Button addAuthorButton;
 
 	@FXML
-	Button removeAuthorButton;
+	private Button removeAuthorButton;
 
 	@FXML
-	TextField phraseField;
+	private TextField phraseField;
 
 	@FXML
-	TextField titleField;
+	private TextField titleField;
 
 	@FXML
-	TextField firstNameField;
+	private TextField firstNameField;
 
 	@FXML
-	TextField lastNameField;
+	private TextField lastNameField;
 
 	private final DataProvider dataProvider = DataProvider.INSTANCE;
 	private final BookServiceModel model = new BookServiceModel();
