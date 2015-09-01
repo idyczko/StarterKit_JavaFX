@@ -18,6 +18,9 @@ import com.capgemini.bookservice.model.BookVO;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/*
+ * REV: warstwa dostepu do danych powinna byc zdefiniowana w osobnym pakiecie
+ */
 public class DataProviderImpl implements DataProvider {
 	private ObjectMapper mapper = new ObjectMapper();
 
@@ -41,7 +44,15 @@ public class DataProviderImpl implements DataProvider {
 		if(phrase == null){
 			phrase ="";
 		}
+		/*
+		 * REV: adres serwera powinien byc zdefiniowany w pliku konfiguracyjnym
+		 */
 		String url = "http://localhost:9721/workshop/rest/books/books-by-title?titlePrefix=" + phrase;
+
+		/*
+		 * REV: utworzenie obiektu HttpClient jest kosztowne.
+		 * Powinien on byc stworzony w konstruktorze, a nie przy kazdym zapytaniu do serwera.
+		 */
 		HttpClient httpClient = HttpClientBuilder.create().build();
 		HttpGet request = new HttpGet(url);
 		HttpResponse response = httpClient.execute(request);
@@ -51,7 +62,9 @@ public class DataProviderImpl implements DataProvider {
 	}
 
 	private Boolean sendDeleteRequest(Long id) throws IOException {
-
+		/*
+		 * REV: j.w.
+		 */
 		String url = "http://localhost:9721/workshop/rest/books/book/" + id;
 		HttpClient httpClient = HttpClientBuilder.create().build();
 		HttpDelete request = new HttpDelete(url);
@@ -60,6 +73,9 @@ public class DataProviderImpl implements DataProvider {
 	}
 
 	private String sendSaveRequest(BookVO book) throws IOException {
+		/*
+		 * REV: j.w.
+		 */
 		String url = "http://localhost:9721/workshop/rest/books/book";
 		HttpClient httpClient = HttpClientBuilder.create().build();
 		HttpPost request = new HttpPost(url);

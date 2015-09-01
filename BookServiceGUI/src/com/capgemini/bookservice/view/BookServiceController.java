@@ -22,7 +22,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-
+/*
+ * REV: Kontroler nie nalezy do widoku (pakiet view). Powinien zanjdowac sie w osobnym pakiecie.
+ */
 public class BookServiceController {
 
 	@FXML
@@ -99,6 +101,10 @@ public class BookServiceController {
 
 					BookVO returnedBook = dataProvider
 							.saveBook(new BookVO(null, model.getTitle(), new HashSet<AuthorVO>(model.getAuthors())));
+					/*
+					 * REV: modyfikacje modelu i kontrolek musza odbywac sie w watku JavaFX.
+					 * To ponizej dziala tylko przypadkiem :)
+					 */
 					model.getResult().add(returnedBook);
 					titleField.clear();
 					firstNameField.clear();
@@ -110,6 +116,9 @@ public class BookServiceController {
 
 			new Thread(backgroundTask).start();
 		} catch (Exception e) {
+			/*
+			 * REV: tekst powinien byc pobrany z bundla
+			 */
 			showAlert("Exception encountered!", "Please perform action later, as the server is not available.");
 		}
 	}
@@ -126,6 +135,9 @@ public class BookServiceController {
 						bookIsDeleted = dataProvider
 								.deleteBook(bookTable.getSelectionModel().getSelectedItem().getId());
 						if (bookIsDeleted) {
+							/*
+							 * REV: j.w.
+							 */
 							model.getResult().remove(bookTable.getSelectionModel().getSelectedItem());
 						}
 						return bookIsDeleted;
@@ -133,10 +145,24 @@ public class BookServiceController {
 				};
 
 				new Thread(backgroundTask).start();
+
+				/*
+				 * REV: podejrzewam, ze chciales zlapac wyjatek z dataProvider.deleteBook().
+				 * Niestety ten catch go nie zlapie, bo dataProvider jest wywolany w innym watku.
+				 * Catch musialby byc wewnatrz metody call().
+				 * Ale wyswietlenie informacji o bledzie na GUI trzeba wykonac w watku JavaFX,
+				 * a wiec najlepiej jest przeciazyc metode Task.failed().
+				 */
 			} catch (Exception e) {
+				/*
+				 * REV: j.w.
+				 */
 				showAlert("Exception encountered!", "Please perform action later, as the server is not available.");
 			}
 		} else {
+			/*
+			 * REV: j.w.
+			 */
 			showAlert("Warning", "Please select book to be deleted from table!");
 		}
 	}
@@ -166,6 +192,9 @@ public class BookServiceController {
 				@Override
 				protected Collection<BookVO> call() throws IOException {
 					Collection<BookVO> books = dataProvider.findBooks(model.getPhrase());
+					/*
+					 * REV: j.w.
+					 */
 					model.setResult(books);
 					return books;
 				}

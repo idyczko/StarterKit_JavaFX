@@ -9,6 +9,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
+<!-- REV: nie ma potrzeby ustawiania arkusza stylow (standard.css) dla kazdego elementu -->
 <BorderPane prefHeight="1080.0" prefWidth="1920.0"
 	stylesheets="@../css/standard.css" xmlns="http://javafx.com/javafx/8.0.40"
 	xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.capgemini.bookservice.view.BookServiceController">
@@ -16,6 +17,7 @@
 		<MenuBar styleClass="rootLayout" stylesheets="@../css/standard.css"
 			BorderPane.alignment="CENTER">
 			<menus>
+                <!-- REV: wyswietlane teksty nie sa przetlumaczone -->
 				<Menu mnemonicParsing="false" text="File">
 					<items>
 						<MenuItem mnemonicParsing="false" text="Close" />
@@ -54,6 +56,7 @@
 									<children>
 										<Label layoutX="14.0" layoutY="14.0" prefHeight="31.0"
 											prefWidth="140.0" styleClass="paneTitle" text="%label.save">
+                                            <!-- REV: lepiej zdefiniowac czcionke w CSSie -->
 											<font>
 												<Font size="21.0" />
 											</font>
@@ -159,6 +162,7 @@
 											</rowConstraints>
 											<children>
 												<Label prefHeight="21.0" prefWidth="91.0" text="%label.title" />
+                                                <!-- REV: TextField ma domyslna klase stylu 'text-field' -->
 												<TextField fx:id="phraseField" prefHeight="31.0"
 													prefWidth="165.0" styleClass="textField"
 													GridPane.columnIndex="1" />

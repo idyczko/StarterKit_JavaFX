@@ -5,12 +5,12 @@
 
 
 .AnchorPane .label {
-	-fx-font-size: 15.0px;	
+	-fx-font-size: 15.0px;
 	-fx-text-fill: white;
 }
 
 .SplitPane .paneTitle {
-	-fx-font-size: 22.0px;	
+	-fx-font-size: 22.0px;
 }
 
 .SplitPane {
@@ -18,7 +18,7 @@
 }
 
 .text-field {
-	-fx-background-color:#007ACC;	
+	-fx-background-color:#007ACC;
 	-fx-border-color: white;
 }
 
@@ -47,6 +47,9 @@
 
 .table-view {
     -fx-base: #1d1d1d;
+    /*
+     * REV: chyba nie ma takiego stylu
+     */
     -fx-control-inner-background: #1d1d1d;
     -fx-background-color: #1d1d1d;
     -fx-padding: 5;
@@ -82,6 +85,9 @@
     -fx-background-color: transparent, derive(#1d1d1d,20%);
 }
 
+/*
+ * REV: lepiej byloby znalezc TableView przez fx:id
+ */
 .AnchorPane .SplitPane .SplitPane .AnchorPane .table-view .column-header .label {
     -fx-font-size: 17pt;
 }

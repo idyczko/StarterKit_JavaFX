@@ -5,6 +5,9 @@ import java.util.Collection;
 
 import com.capgemini.bookservice.model.BookVO;
 
+/*
+ * REV: warstwa dostepu do danych powinna byc zdefiniowana w osobnym pakiecie
+ */
 public interface DataProvider {
 
 	DataProvider INSTANCE = new DataProviderImpl();
