@@ -11,6 +11,10 @@ import javafx.stage.Stage;
 public class Main extends Application {
 	private static final String BUNDLE_PATH = "com/capgemini/imageviewer/view/bundle/bundle";
 
+	/*
+	 * primaryStage jest przekazywany przez JavaFX do metody start().
+	 * Ta zmienna moze byc null'em.
+	 */
 	private Stage primaryStage = new Stage();
 
 	@Override

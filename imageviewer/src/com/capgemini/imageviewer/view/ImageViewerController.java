@@ -18,6 +18,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.DirectoryChooser;
 
+/*
+ * REV: kontroler powinien byc zdefiniowany w osobnym pakiecie (nie nalezy do widoku)
+ */
 public class ImageViewerController {
 	@FXML
 	private ImageView imageView;
@@ -46,6 +49,10 @@ public class ImageViewerController {
 
 			@Override
 			protected Void call() throws Exception {
+				/*
+				 * REV: Modyfikacja kontrolek GUI i modelu powinna byc wykonana w watku JavaFX.
+				 * Najlepiej przeciazyc metode Task.succeeded().
+				 */
 				int pictureIndex = model.getSelectedFileIndex().get() + 1;
 				if (pictureIndex >= model.getFiles().size()) {
 					pictureIndex = 0;
@@ -65,6 +72,10 @@ public class ImageViewerController {
 
 			@Override
 			protected Void call() throws Exception {
+				/*
+				 * REV: Modyfikacja kontrolek GUI i modelu powinna byc wykonana w watku JavaFX.
+				 * Najlepiej przeciazyc metode Task.succeeded().
+				 */
 				int pictureIndex = model.getSelectedFileIndex().get() - 1;
 				if (pictureIndex < 0) {
 					pictureIndex = model.getFiles().size() - 1;
@@ -110,6 +121,10 @@ public class ImageViewerController {
 
 					@Override
 					protected Void call() throws Exception {
+						/*
+						 * REV: Modyfikacja kontrolek GUI i modelu powinna byc wykonana w watku JavaFX.
+						 * Najlepiej przeciazyc metode Task.succeeded().
+						 */
 						model.getSelectedFileIndex().set(filesList.getSelectionModel().getSelectedIndex());
 						Image img = dataProvider.getImage(model.getFolderPath() + "\\" + newValue);
 						loadImage(img);
